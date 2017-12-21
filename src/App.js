@@ -12,7 +12,7 @@ class App extends Component {
     let item = this.inp.value
     fetch("http://localhost:3001/addTodo", {
       method: "POST",
-      body: JSON.stringify(item)
+      body: JSON.stringify({item: item, username: this.username})
     });
     this.setState(st => { return { todos: st.todos.concat(item) } }, () => item = "")
   }
@@ -20,12 +20,14 @@ class App extends Component {
   deleteEverything = () => {
     fetch("http://localhost:3001/clearTodos", {
       method: "POST",
+      body: JSON.stringify(this.username)
     });
     this.setState({ todos: [] })
   }
 
   componentDidMount() {
-    fetch("http://localhost:3001/todos")
+    this.username = window.prompt('what is your username');
+    fetch("http://localhost:3001/todos?username=" + this.username)
     .then(x => x.text())
     .then(raw => {
       let lst = JSON.parse(raw);

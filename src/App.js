@@ -18,6 +18,9 @@ class App extends Component {
   }
 
   deleteEverything = () => {
+    fetch("http://localhost:3001/clearTodos", {
+      method: "POST",
+    });
     this.setState({ todos: [] })
   }
 

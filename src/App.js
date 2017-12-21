@@ -5,15 +5,29 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    this.state = { numbers: [] }
+    this.state = { todos: [] }
   }
 
   add = () => {
-    this.setState(st => { return { numbers: st.numbers.concat(this.inp.value) } }, () => this.inp.value = "")
+    let item = this.inp.value
+    fetch("http://localhost:3001/addTodo", {
+      method: "POST",
+      body: JSON.stringify(item)
+    });
+    this.setState(st => { return { todos: st.todos.concat(item) } }, () => item = "")
   }
 
   deleteEverything = () => {
-    this.setState({ numbers: [] })
+    this.setState({ todos: [] })
+  }
+
+  componentDidMount() {
+    fetch("http://localhost:3001/todos")
+    .then(x => x.text())
+    .then(raw => {
+      let lst = JSON.parse(raw);
+      this.setState({todos: lst})
+    })
   }
 
   render() {
@@ -22,7 +36,7 @@ class App extends Component {
         <input ref={r => this.inp = r}></input>
         <button onClick={this.add}>add it </button>
         <button onClick={this.deleteEverything}>delete them </button>
-        {this.state.numbers.map(x => (<li> {x} </li>))}
+        {this.state.todos.map(x => (<li> {x} </li>))}
       </div>
     );
   }
